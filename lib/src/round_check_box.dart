@@ -14,9 +14,13 @@ class RoundCheckBox extends StatefulWidget {
     this.borderColor,
     this.size,
     this.animationDuration,
+    this.enableToggle = true,
     this.isRound = true,
     required this.onTap,
   }) : super(key: key);
+
+  ///Define if the checkbox value should toggle or not
+  final bool enableToggle;
 
   ///Define wether the checkbox is marked or not
   final bool? isChecked;
@@ -117,52 +121,54 @@ class _RoundCheckBoxState extends State<RoundCheckBox> {
   Widget build(BuildContext context) {
     return widget.onTap != null
         ? GestureDetector(
-      onTap: () {
-        setState(() => isChecked = !isChecked!);
-        widget.onTap!(isChecked);
-      },
-      child: ClipRRect(
-        borderRadius: borderRadius,
-        child: AnimatedContainer(
-          duration: animationDuration,
-          height: size,
-          width: size,
-          decoration: BoxDecoration(
-            color: isChecked! ? checkedColor : uncheckedColor,
-            border: widget.border ??
-                Border.all(
-                  color: borderColor,
+            onTap: () {
+              if (widget.enableToggle) {
+                setState(() => isChecked = !isChecked!);
+              }
+              widget.onTap!(isChecked);
+            },
+            child: ClipRRect(
+              borderRadius: borderRadius,
+              child: AnimatedContainer(
+                duration: animationDuration,
+                height: size,
+                width: size,
+                decoration: BoxDecoration(
+                  color: isChecked! ? checkedColor : uncheckedColor,
+                  border: widget.border ??
+                      Border.all(
+                        color: borderColor,
+                      ),
+                  borderRadius: borderRadius,
                 ),
-            borderRadius: borderRadius,
-          ),
-          child: isChecked! ? checkedWidget : uncheckedWidget,
-        ),
-      ),
-    )
-        : ClipRRect(
-      borderRadius: borderRadius,
-      child: AnimatedContainer(
-        duration: animationDuration,
-        height: size,
-        width: size,
-        decoration: BoxDecoration(
-          color: widget.disabledColor ?? Theme.of(context).disabledColor,
-          border: widget.border ??
-              Border.all(
-                color: widget.disabledColor ??
-                    Theme.of(context).disabledColor,
+                child: isChecked! ? checkedWidget : uncheckedWidget,
               ),
-          borderRadius: borderRadius,
-        ),
-        child: isChecked! ? checkedWidget : uncheckedWidget,
-      ),
-    );
+            ),
+          )
+        : ClipRRect(
+            borderRadius: borderRadius,
+            child: AnimatedContainer(
+              duration: animationDuration,
+              height: size,
+              width: size,
+              decoration: BoxDecoration(
+                color: widget.disabledColor ?? Theme.of(context).disabledColor,
+                border: widget.border ??
+                    Border.all(
+                      color: widget.disabledColor ??
+                          Theme.of(context).disabledColor,
+                    ),
+                borderRadius: borderRadius,
+              ),
+              child: isChecked! ? checkedWidget : uncheckedWidget,
+            ),
+          );
   }
 
-  BorderRadius get borderRadius{
-    if(widget.isRound){
-      return BorderRadius.circular(size!/2);
-    }else{
+  BorderRadius get borderRadius {
+    if (widget.isRound) {
+      return BorderRadius.circular(size! / 2);
+    } else {
       return BorderRadius.zero;
     }
   }
